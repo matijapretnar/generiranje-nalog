@@ -1,0 +1,14 @@
+Generiranje nalog
+=================
+
+Spodnji program za dani seznam študentov omogoča generiranje naključnih nalog
+ter njihovih rešitev. Program sprejme:
+
+1. seznam nalog (vsaka je opisana s programom v Mathematici),
+2. vzorčno datoteko (ponavadi v LaTeXu) in
+3. seznam študentov,
+
+nato pa ustvari posamezne datoteke z nalogami in skupno datoteko z rešitvami.
+Naloge niso čisto naključne, saj vam program za istega študenta vedno vrne enako
+nalogo. To vam omogoča, da naloge naknadno popravljate, ne da bi se vam pri tem
+v celoti spremenile.
