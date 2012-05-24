@@ -1,0 +1,1137 @@
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[         0,          0]
+NotebookDataLength[     41756,       1136]
+NotebookOptionsPosition[     38446,       1024]
+NotebookOutlinePosition[     39007,       1046]
+CellTagsIndexPosition[     38964,       1043]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Avtomatsko sestavljanje nalog", "Title"],
+
+Cell["\<\
+Spodnji program za dani seznam \[SHacek]tudentov omogo\[CHacek]a avtomatsko \
+sestavljanje naklju\[CHacek]nih nalog ter njihovih re\[SHacek]itev. Program \
+sprejme:\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "seznam nalog (vsaka je opisana s programom v ",
+ StyleBox["Mathematici",
+  FontSlant->"Italic"],
+ "),"
+}], "ItemNumbered"],
+
+Cell[TextData[{
+ "vzor\[CHacek]no datoteko (ponavadi v ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    StyleBox[
+     RowBox[{"L", 
+      StyleBox[
+       AdjustmentBox["A",
+        BoxBaselineShift->-0.4,
+        BoxMargins->{{-0.5, -0.3}, {0, 0}}],
+       FontSize->10], "T", 
+      AdjustmentBox["E",
+       BoxBaselineShift->0.5,
+       BoxMargins->{{-0.3, 0}, {0, 0}}], "Xu"}]],
+    SingleLetterItalics->False], TraditionalForm]]],
+ ") in"
+}], "ItemNumbered"],
+
+Cell["seznam \[SHacek]tudentov,", "ItemNumbered"]
+}, Open  ]],
+
+Cell["\<\
+nato pa sestavi naloge ter ustvari posamezne datoteke z nalogami in skupno \
+datoteko z re\[SHacek]itvami. Naloge niso \[CHacek]isto naklju\[CHacek]ne, \
+saj vam program za istega \[SHacek]tudenta vedno vrne enako nalogo. To vam \
+omogo\[CHacek]a, da naloge naknadno popravljate, ne da bi se vam pri tem v \
+celoti spremenile.
+
+Za idejo se zahvaljujem Gregorju \[CapitalSHacek]egi.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell["Pripravljanje podatkov za naloge", "Section"],
+
+Cell[TextData[{
+ "Prvi korak sestavljanja nalog je ustvarjanje podatkov naloge. Ti vsebujejo \
+vse klju\[CHacek]ne podatke, ki jih ho\[CHacek]emo izpisati: tako nalogo kot \
+tudi njene re\[SHacek]itve. Ne vsebujejo pa spremnega besedila, saj bo to v \
+vzor\[CHacek]ni datoteki.\n\nVsako nalogo predstavimo s funkcijo, ki sprejme \
+podatke o \[SHacek]tudentu (seznam, ki vsebuje vpisno \[SHacek]tevilko, \
+priimek in ime) in vrne seznam podatkov o nalogi. Podatkov o \[SHacek]tudentu \
+ni treba uporabiti, lahko pa z njimi sestavite nalogo, kjer se v odgovoru \
+skriva vpisna \[SHacek]tevilka ali \[SHacek]tudentove za\[CHacek]etnice.\n\n\
+Na\[CHacek]eloma s samo obliko funkcije niste omejeni, vendar je \
+ve\[CHacek]inoma najprimernej\[SHacek]a oblika ukaz ",
+ StyleBox["Module", "Input"],
+ ", v katerem na\[SHacek]tejemo lokalne spremenljivke, ki jim postopoma \
+nastavljamo vrednosti (obi\[CHacek]ajno z ukazi za naklju\[CHacek]ne izbire), \
+zadnji ukaz pa je seznam vrednosti, ki bi jih vrnili.\n\nZa za\[CHacek]etek \
+si definirajmo nalogo, ki bo od \[SHacek]tudenta zahtevala ni\[CHacek]le \
+danega polinoma. Najenostavnej\[SHacek]i pristop je, da si najprej izmislimo \
+ni\[CHacek]le, nato pa iz njih rekonstruiramo polinom.\nIzvedite spodnjo \
+definicijo (in Mathematici potrdite, da naj poprej izvede \[SHacek]e \
+inicializacijske ukaze)."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Polinom", "[", "student_", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"nicle", ",", "polinom"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"nicle", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"polinom", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "nicla"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"nicla", ",", "nicle"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"nicle", ",", "polinom"}], "}"}]}]}], "]"}]}]], "Input"],
+
+Cell[TextData[{
+ "S funkcijo ",
+ StyleBox["PrimeriNaloge", "Input"],
+ " lahko na hitro pogledamo nekaj (ne popolnoma) naklju\[CHacek]nih primerov \
+naloge."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{"PrimeriNaloge", "[", 
+  RowBox[{"Polinom", ",", " ", "10"}], "]"}]], "Input"],
+
+Cell[TextData[{
+ "V\[CHacek]asih bi radi, da va\[SHacek]a naloga zado\[SHacek]\[CHacek]a dolo\
+\[CHacek]enim pogojem. Za primer sestavimo nalogo, ki bo od \[SHacek]tudenta \
+zahtevala ni\[CHacek]le in pole dane racionalne funkcije. Za to potrebujemo \
+dva polinoma brez skupnih ni\[CHacek]el. Na\[CHacek]eloma lahko podatke \
+pripravljamo na na\[CHacek]in, pri katerem je pogojem vedno zado\[SHacek]\
+\[CHacek]eno. V tem primeru bi ni\[CHacek]le drugega polinoma izbirali le iz \
+komplementa ni\[CHacek]el prvega polinoma. Vendar ta postopek hitro odpove, \
+ko pridemo do zapletenej\[SHacek]ih pogojev (celo\[SHacek]tevilski inverz \
+matrike, racionalne lastne vrednosti, \[OpenCurlyDoubleQuote]lepe\
+\[CloseCurlyDoubleQuote] re\[SHacek]itve linearnega programa, \[Ellipsis])\n\n\
+V ta namen lahko uporabite funkcijo ",
+ StyleBox["Preveri", "Input"],
+ ", ki sprejme pogoj. \[CapitalCHacek]e je ta pogoj izpolnjen, se izvajanje \
+nadaljuje, sicer pa program javi (ne\[SHacek]kodljivo) napako in podatki se \
+za\[CHacek]nejo pripravljati znova. V na\[SHacek]em primeru lahko neodvisno \
+izberemo ni\[CHacek]le obeh polinomov ter \[SHacek]ele nato preverimo, da \
+jima nobena ni\[CHacek]la ni skupna."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Racionalna", "[", "student_", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"nicle", ",", "poli", ",", "stevec", ",", "imenovalec"}], "}"}], 
+    ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"nicle", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"poli", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"(*", " ", 
+      RowBox[{"preverimo", ",", " ", 
+       RowBox[{
+       "da", " ", "imajo", " ", "ni\[CHacek]le", " ", "in", " ", "poli", " ", 
+        "prazen", " ", "presek"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"Preveri", "[", 
+      RowBox[{
+       RowBox[{"Intersection", "[", 
+        RowBox[{"nicle", ",", "poli"}], "]"}], "\[Equal]", 
+       RowBox[{"{", "}"}]}], "]"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"stevec", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "nicla"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"nicla", ",", "nicle"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"imenovalec", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "pol"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"pol", ",", "poli"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"nicle", ",", "poli", ",", 
+       RowBox[{"stevec", "/", "imenovalec"}]}], "}"}]}]}], "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"PrimeriNaloge", "[", "Racionalna", "]"}]], "Input"],
+
+Cell[TextData[{
+ "Ko izra\[CHacek]unamo nekaj primerov, vidimo, da pogoj nekajkrat ni veljal, \
+vendar program posku\[SHacek]a toliko \[CHacek]asa, dokler ne najde ustreznih \
+podatkov.\n",
+ StyleBox["Pozor:",
+  FontWeight->"Bold"],
+ " pazite, da va\[SHacek]a naloga lahko zado\[SHacek]\[CHacek]a pogojem, ki \
+bi jih radi. V nasprotnem primeru se bo program zapletel v neskon\[CHacek]no \
+zanko in kar naprej posku\[SHacek]al najti primerne podatke.\n\n\
+\[CapitalSHacek]e to, \[CHacek]e funkciji ",
+ StyleBox["PrimeriNaloge", "Input"],
+ " ne podamo \[SHacek]tevila, dobimo 7 primerov."
+}], "Text"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Izpisovanje nalog", "Section"],
+
+Cell[TextData[{
+ "Ko pripravite vse podatke, uporabite funkcijo ",
+ StyleBox["SestaviNaloge", "Input"],
+ ". Ta sprejme vzor\[CHacek]no datoteko (ponavadi ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    RowBox[{"L", 
+     StyleBox[
+      AdjustmentBox["A",
+       BoxBaselineShift->-0.4,
+       BoxMargins->{{-0.5, -0.3}, {0, 0}}],
+      FontSize->Smaller], "T", 
+     AdjustmentBox["E",
+      BoxBaselineShift->0.5,
+      BoxMargins->{{-0.3, 0}, {0, 0}}], "X"}],
+    SingleLetterItalics->False], TraditionalForm]]],
+ "-ovsko) in opise nalog. Nato ustvari podatke ter jih izpi\[SHacek]e v \
+datoteke. Ker boste ponavadi hoteli ustvariti ve\[CHacek] datotek (list z \
+nalogo za vsakega \[SHacek]tudenta, en list z vsemi re\[SHacek]itvami, \
+skripta za klic ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    StyleBox[
+     RowBox[{"L", 
+      StyleBox[
+       AdjustmentBox["A",
+        BoxBaselineShift->-0.4,
+        BoxMargins->{{-0.5, -0.3}, {0, 0}}],
+       FontSize->10], "T", 
+      AdjustmentBox["E",
+       BoxBaselineShift->0.5,
+       BoxMargins->{{-0.3, 0}, {0, 0}}], "Xa"}]],
+    SingleLetterItalics->False], TraditionalForm]]],
+ " na vsaki datoteki, \[Ellipsis]), je vzor\[CHacek]na datoteka razdeljena na \
+ve\[CHacek] delov. Preden nadaljujete, si oglejte vzor\[CHacek]no datoteko ",
+ StyleBox["vzorec.tex", "Input"],
+ ".\n\nVsako nalogo opi\[SHacek]ete z imenom zgoraj definirane funkcije ter s \
+seznamom spremenljivk, pod katerimi so v vzor\[CHacek]ni datoteki dostopni \
+njeni podatki. Ni potrebno, da spremenljivke ustrezajo tistim, ki ste jih \
+uporabili v funkcijah, pazite pa, da se med posameznimi nalogami ne \
+ponavljajo. Na primer, obe nalogi s polinomi in racionalnimi funkcijami \
+vsebujeta podatke o ni\[CHacek]lah. V obeh primerih lahko v funkciji, ki \
+pripravlja podatke, uporabimo spremenljivko ",
+ StyleBox["nicle", "Input"],
+ ", ko pa naloge izpisujemo, moramo ni\[CHacek]le lo\[CHacek]iti in tako se \
+na prve sklicujemo s spremenljivko ",
+ StyleBox["niclePolinoma", "Input"],
+ ", na druge pa z ",
+ StyleBox["nicleRacionalne", "Input"],
+ ".\n\nKo pokli\[CHacek]ete funkcijo ",
+ StyleBox["SestaviNaloge", "Input"],
+ ", se pripravijo podatki nalog za vse \[SHacek]tudente, vi pa dobite njihov \
+predogled. \[CapitalCHacek]e s podatki niste zadovoljni, sestavljanje \
+prekinete ter popravite funkcije, ki opisujejo naloge. \[CapitalCHacek]e ste \
+s podatki zadovoljni, izpi\[SHacek]ete datoteke. \[CapitalCHacek]e ste z \
+datotekami zadovoljni, ste kon\[CHacek]ali, \[CHacek]e pa niste, pa popravite \
+vzor\[CHacek]no datoteko ter ponovno izpi\[SHacek]ete datoteke. Datoteke se \
+vsaki\[CHacek] izpi\[SHacek]ejo na novo, vendar s starimi podatki. Tako lahko \
+delate hitre popravke v vzor\[CHacek]ni datoteki, saj se izognete pogosto \
+zamudnemu pripravljanju podatkov nalog."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{"SestaviNaloge", "[", "\[IndentingNewLine]", 
+  RowBox[{"\"\<vzorec.tex\>\"", ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Polinom", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"niclePolinoma", ",", " ", "polinom"}], "}"}]}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Racionalna", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"nicleRacionalne", ",", " ", "poli", ",", " ", "racionalna"}], 
+      "}"}]}], "}"}]}], "\[IndentingNewLine]", "]"}]], "Input"],
+
+Cell[TextData[{
+ "Funkcija ",
+ StyleBox["SestaviNaloge", "Input"],
+ " pozna slede\[CHacek]e nastavitve:"
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["CiljniDirektorij", "Input"],
+ ", ki pove pot, kamor naj se shranijo sestavljene naloge (v osnovi se \
+shranijo v direktorij programa)."
+}], "Item"],
+
+Cell[TextData[{
+ StyleBox["SeznamStudentov", "Input"],
+ ", ki pove ime CSV datoteke (v osnovi je to ",
+ StyleBox["studentje.csv", "Input"],
+ "), v kateri so shranjeni podatki o \[SHacek]tudentih. Prvi trije stolpci \
+naj bodo: vpisna \[SHacek]tevilka, priimek in ime. Preostali stolpci lahko \
+hranijo poljubne podatke, do katerih lahko dostopate z izrazom ",
+ StyleBox["student[[", "Input"],
+ Cell[BoxData[
+  FormBox["i", TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ StyleBox["]]", "Input"],
+ ", kjer je ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"i", Cell[""]}], TraditionalForm]],
+  FormatType->"TraditionalForm"],
+ "\[SHacek]tevilka stolpca."
+}], "Item"],
+
+Cell[TextData[{
+ StyleBox["KodnaTabela", "Input"],
+ ", ki dolo\[CHacek]a kodno tabelo (v osnovi je to ",
+ StyleBox["UTF8", "Input"],
+ "), ki jo uporabljate za seznam \[SHacek]tudentov ter vzor\[CHacek]ne \
+datoteke. Bolje je uporabljati nastavitev ",
+ StyleBox["UTF8", "Input"],
+ ", zna pa se zgoditi, da morate uporabiti nastavitev ",
+ StyleBox["WindowsEastEurope", "Input"],
+ " (\[CHacek]e va\[SHacek] ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    RowBox[{"L", 
+     StyleBox[
+      AdjustmentBox["A",
+       BoxBaselineShift->-0.4,
+       BoxMargins->{{-0.5, -0.3}, {0, 0}}],
+      FontSize->Smaller], "T", 
+     AdjustmentBox["E",
+      BoxBaselineShift->0.5,
+      BoxMargins->{{-0.3, 0}, {0, 0}}], "X"}],
+    SingleLetterItalics->False], TraditionalForm]]],
+ " urejevalnik ne pozna Unicodea) ali ",
+ StyleBox["ISO8859-2", "Input"],
+ "."
+}], "Item"]
+}, Open  ]],
+
+Cell["\<\
+Nastavitve podate tako, da jih skupaj z njihovimi vrednostmi podate na koncu \
+klica funkcije. Primer:\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"SestaviNaloge", "[", "\[IndentingNewLine]", 
+  RowBox[{"\"\<vzorec.tex\>\"", ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Polinom", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"niclePolinoma", ",", " ", "polinom"}], "}"}]}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Racionalna", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"nicleRacionalne", ",", " ", "poli", ",", " ", "racionalna"}], 
+      "}"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"CiljniDirektorij", "\[Rule]", "\"\<Namizje\>\""}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input"],
+
+Cell["\<\
+Vrstni red nastavitev je poljuben. \[CapitalCHacek]e kak\[SHacek]no \
+nastavitev izpustite, se uporabi privzeta vrednost.\
+\>", "Text"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Celoten primer", "Section"],
+
+Cell["\<\
+Ko enkrat znate uporabljati program, lahko zgornjo razlago pobri\[SHacek]ete \
+in uporabljate le spodnji vzorec.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Polinom", "[", "student_", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"nicle", ",", "polinom"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"nicle", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"polinom", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "nicla"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"nicla", ",", "nicle"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"nicle", ",", "polinom"}], "}"}]}]}], "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Racionalna", "[", "student_", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"nicle", ",", "poli", ",", "stevec", ",", "imenovalec"}], "}"}], 
+    ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"nicle", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"poli", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"(*", " ", 
+      RowBox[{"preverimo", ",", " ", 
+       RowBox[{
+       "da", " ", "imajo", " ", "ni\[CHacek]le", " ", "in", " ", "poli", " ", 
+        "prazen", " ", "presek"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"Preveri", "[", 
+      RowBox[{
+       RowBox[{"Intersection", "[", 
+        RowBox[{"nicle", ",", "poli"}], "]"}], "\[Equal]", 
+       RowBox[{"{", "}"}]}], "]"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"stevec", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "nicla"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"nicla", ",", "nicle"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"imenovalec", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "pol"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"pol", ",", "poli"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"nicle", ",", "poli", ",", 
+       RowBox[{"stevec", "/", "imenovalec"}]}], "}"}]}]}], "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"PrimeriNaloge", "[", "Racionalna", "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"SestaviNaloge", "[", "\[IndentingNewLine]", 
+  RowBox[{"\"\<vzorec.tex\>\"", ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Polinom", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"niclePolinoma", ",", " ", "polinom"}], "}"}]}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Racionalna", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"nicleRacionalne", ",", " ", "poli", ",", " ", "racionalna"}], 
+      "}"}]}], "}"}]}], "\[IndentingNewLine]", "]"}]], "Input"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Podporna koda", "Section"],
+
+Cell["\<\
+Pod to vrstico se skriva podporna koda za sestavljanje nalog, ki je na\
+\[CHacek]eloma ni potrebno spreminjati.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell["Dodatni ukazi", "Subsection",
+ InitializationCell->True,
+ InitializationGroup->True],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ImeStudenta", "[", "student_", "]"}], " ", ":=", " ", 
+  RowBox[{
+   RowBox[{"student", "[", 
+    RowBox[{"[", "3", "]"}], "]"}], " ", "<>", " ", "\"\< \>\"", " ", "<>", 
+   " ", 
+   RowBox[{"student", "[", 
+    RowBox[{"[", "2", "]"}], "]"}]}]}], "\n", 
+ RowBox[{
+  RowBox[{"ImeDatoteke", "[", "student_", "]"}], " ", ":=", " ", "\n", "  ", 
+  RowBox[{"StringReplace", "[", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"student", "[", 
+      RowBox[{"[", "2", "]"}], "]"}], " ", "<>", " ", 
+     RowBox[{"student", "[", 
+      RowBox[{"[", "3", "]"}], "]"}]}], ",", " ", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"\"\< \>\"", " ", "->", " ", "\"\<\>\""}], ",", " ", 
+      RowBox[{"\"\<\[CHacek]\>\"", " ", "->", " ", "\"\<c\>\""}], ",", " ", 
+      RowBox[{"\"\<\[CapitalCHacek]\>\"", " ", "->", " ", "\"\<C\>\""}], ",", 
+      " ", 
+      RowBox[{"\"\<\[SHacek]\>\"", " ", "->", " ", "\"\<s\>\""}], ",", " ", 
+      RowBox[{"\"\<\[CapitalSHacek]\>\"", " ", "->", " ", "\"\<S\>\""}], ",", 
+      " ", 
+      RowBox[{"\"\<\[ZHacek]\>\"", " ", "->", " ", "\"\<z\>\""}], ",", " ", 
+      RowBox[{"\"\<\[CapitalZHacek]\>\"", " ", "->", " ", "\"\<Z\>\""}], ",", 
+      " ", 
+      RowBox[{"\"\<\[CAcute]\>\"", " ", "->", " ", "\"\<c\>\""}], ",", " ", 
+      RowBox[{"\"\<\[CapitalCAcute]\>\"", " ", "->", " ", "\"\<C\>\""}]}], 
+     "}"}]}], "]"}]}], "\n", 
+ RowBox[{
+  RowBox[{"VpisnaStevilka", "[", "student_", "]"}], " ", ":=", " ", 
+  RowBox[{"student", "[", 
+   RowBox[{"[", "1", "]"}], "]"}]}]}], "Code",
+ InitializationGroup->True]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Sestavljanje nalog", "Subsection",
+ InitializationCell->True,
+ InitializationGroup->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Opusti", "[", "]"}], " ", ":=", " ", 
+  RowBox[{"Throw", "[", "Null", "]"}]}]], "Code",
+ InitializationGroup->True],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"preveri", "::", "nedrzi"}], " ", "=", " ", 
+   "\"\<Pogoj `1` ne drzi.\>\""}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Preveri", "[", "pogoj_", "]"}], " ", ":=", "\n", "  ", 
+  RowBox[{"If", "[", 
+   RowBox[{
+    RowBox[{"Not", "[", 
+     RowBox[{"TrueQ", "[", "pogoj", "]"}], "]"}], ",", " ", 
+    RowBox[{
+     RowBox[{"Message", "[", 
+      RowBox[{
+       RowBox[{"preveri", "::", "nedrzi"}], ",", " ", 
+       RowBox[{"HoldForm", "[", "pogoj", "]"}]}], "]"}], ";", " ", 
+     RowBox[{"Opusti", "[", "]"}]}]}], "]"}]}], "\n", 
+ RowBox[{"SetAttributes", "[", 
+  RowBox[{"Preveri", ",", " ", "HoldFirst"}], "]"}]}], "Code",
+ InitializationGroup->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"PripraviNalogo", "[", 
+   RowBox[{"problem_", ",", " ", "student_"}], "]"}], " ", ":=", "\n", "  ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"naloga", " ", "=", " ", "Null"}], "}"}], ",", "\n", "    ", 
+    RowBox[{
+     RowBox[{"SeedRandom", "[", 
+      RowBox[{"VpisnaStevilka", "[", "student", "]"}], "]"}], ";", "\n", 
+     "    ", 
+     RowBox[{"While", "[", 
+      RowBox[{
+       RowBox[{"naloga", " ", "\[Equal]", " ", "Null"}], ",", " ", 
+       RowBox[{"naloga", " ", "=", " ", 
+        RowBox[{"Catch", "[", 
+         RowBox[{"problem", "[", "student", "]"}], "]"}]}]}], "]"}], ";", 
+     "\n", "    ", "naloga"}]}], "\n", "  ", "]"}]}]], "Code",
+ InitializationGroup->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"PrimeriNaloge", "[", 
+   RowBox[{"problem_", ",", " ", 
+    RowBox[{"stevilo_:", "7"}]}], "]"}], " ", ":=", "\n", "  ", 
+  RowBox[{"TableForm", "[", "\n", "    ", 
+   RowBox[{
+    RowBox[{"Table", "[", "\n", "      ", 
+     RowBox[{
+      RowBox[{"PripraviNalogo", "[", 
+       RowBox[{"problem", ",", " ", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"27001000", " ", "+", " ", "i"}], ",", " ", 
+          RowBox[{"\"\<Novak \>\"", " ", "<>", " ", 
+           RowBox[{"ToString", "[", "i", "]"}]}], ",", " ", "\"\<Janez\>\""}],
+          "}"}]}], "]"}], ",", "\n", "      ", 
+      RowBox[{"{", 
+       RowBox[{"i", ",", " ", "stevilo"}], "}"}]}], "\n", "    ", "]"}], ",", 
+    "\n", "    ", 
+    RowBox[{"TableDepth", " ", "\[Rule]", " ", "2"}]}], "\n", "  ", 
+   "]"}]}]], "Code",
+ InitializationGroup->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"PripraviNaloge", "[", 
+   RowBox[{"problemi_", ",", " ", "studentje_"}], "]"}], " ", ":=", "\n", 
+  "  ", 
+  RowBox[{"Table", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"student", ",", " ", 
+      RowBox[{"Table", "[", 
+       RowBox[{
+        RowBox[{"Quiet", "[", 
+         RowBox[{"PripraviNalogo", "[", 
+          RowBox[{"problem", ",", " ", "student"}], "]"}], "]"}], ",", " ", 
+        RowBox[{"{", 
+         RowBox[{"problem", ",", " ", 
+          RowBox[{"First", " ", "/@", " ", "problemi"}]}], "}"}]}], "]"}]}], 
+     "}"}], ",", " ", 
+    RowBox[{"{", 
+     RowBox[{"student", ",", " ", "studentje"}], "}"}]}], "]"}]}]], "Code",
+ InitializationGroup->True]
+}, Closed]],
+
+Cell[CellGroupData[{
+
+Cell["Izpisovanje nalog", "Subsection",
+ InitializationCell->True,
+ InitializationGroup->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"IzpisiNalogo", "[", 
+   RowBox[{
+   "naloge_", ",", " ", "parametri_", ",", " ", "pot_", ",", " ", 
+    "datotekaNaloge_"}], "]"}], " ", ":=", "\n", "  ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "datoteke", "}"}], ",", "\n", "    ", 
+    RowBox[{
+     RowBox[{"datoteke", " ", "=", " ", 
+      RowBox[{"ReadList", "[", 
+       RowBox[{"datotekaNaloge", ",", " ", "Word", ",", " ", 
+        RowBox[{"RecordLists", " ", "\[Rule]", " ", "True"}], ",", "\n", 
+        "           ", 
+        RowBox[{
+        "RecordSeparators", " ", "\[Rule]", " ", 
+         "\"\<%===============================================================\
+=============%\>\""}], ",", "\n", "           ", 
+        RowBox[{
+        "WordSeparators", " ", "\[Rule]", " ", 
+         "\"\<%---------------------------------------------------------------\
+-------------%\>\""}]}], "]"}]}], ";", "\n", "    ", 
+     RowBox[{"Table", "[", "\n", "      ", 
+      RowBox[{
+       RowBox[{"IzpisiDatoteko", "[", 
+        RowBox[{"naloge", ",", " ", "parametri", ",", " ", 
+         RowBox[{"FileNameJoin", "[", 
+          RowBox[{"{", 
+           RowBox[{"pot", ",", " ", 
+            RowBox[{"First", "[", "datoteka", "]"}]}], "}"}], "]"}], ",", " ", 
+         RowBox[{"FileExtension", "[", "datotekaNaloge", "]"}], ",", " ", 
+         RowBox[{"Rest", "[", "datoteka", "]"}]}], "]"}], ",", "\n", "      ", 
+       RowBox[{"{", 
+        RowBox[{"datoteka", ",", " ", 
+         RowBox[{"StringTrim", " ", "/@", " ", "datoteke"}]}], "}"}]}], "\n", 
+      "    ", "]"}]}]}], "\n", "  ", "]"}]}]], "Code",
+ InitializationGroup->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{
+   RowBox[{"IzpisiDatoteko", "[", 
+    RowBox[{
+    "naloge_", ",", " ", "parametri_", ",", " ", "pot_", ",", " ", 
+     "koncnica_", ",", " ", 
+     RowBox[{"{", "template_", "}"}]}], "]"}], " ", ":=", "\n", "  ", 
+   RowBox[{"Module", "[", 
+    RowBox[{
+     RowBox[{"{", "datoteka", "}"}], ",", "\n", "    ", 
+     RowBox[{
+      RowBox[{"Quiet", "[", 
+       RowBox[{"CreateDirectory", "[", "pot", "]"}], "]"}], ";", "\n", "    ", 
+      RowBox[{"DeleteFile", "[", 
+       RowBox[{"FileNames", "[", 
+        RowBox[{"FileNameJoin", "[", 
+         RowBox[{"{", 
+          RowBox[{"pot", ",", " ", "\"\<*\>\""}], "}"}], "]"}], "]"}], "]"}], 
+      ";", "\n", "    ", 
+      RowBox[{"Do", "[", "\n", "      ", 
+       RowBox[{
+        RowBox[{"Block", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"student", " ", "=", " ", 
+            RowBox[{"naloga", "[", 
+             RowBox[{"[", "1", "]"}], "]"}]}], "}"}], ",", "\n", "        ", 
+          RowBox[{
+           RowBox[{"datoteka", " ", "=", " ", 
+            RowBox[{"OpenWrite", "[", 
+             RowBox[{
+              RowBox[{"FileNameJoin", "[", 
+               RowBox[{"{", 
+                RowBox[{"pot", ",", " ", 
+                 RowBox[{
+                  RowBox[{"ImeDatoteke", "[", "student", "]"}], " ", "<>", 
+                  " ", "\"\<.\>\"", " ", "<>", " ", "koncnica"}]}], "}"}], 
+               "]"}], ",", " ", 
+              RowBox[{"BinaryFormat", " ", "\[Rule]", " ", "True"}]}], 
+             "]"}]}], ";", "\n", "        ", 
+           RowBox[{
+            RowBox[{"Izpisi", "[", 
+             RowBox[{"parametri", ",", " ", 
+              RowBox[{"naloga", "[", 
+               RowBox[{"[", "2", "]"}], "]"}], ",", " ", "template", ",", " ",
+               "datoteka"}], "]"}], "\n", "        ", 
+            RowBox[{"Close", "[", "datoteka", "]"}]}]}]}], "\n", "      ", 
+         "]"}], ",", "\n", "    ", 
+        RowBox[{"{", 
+         RowBox[{"naloga", ",", " ", "naloge"}], "}"}]}], "]"}], ";", "\n", 
+      "  ", 
+      RowBox[{"Return", "[", 
+       RowBox[{"\"\<\[Dash] mapo \>\"", " ", "<>", " ", "pot"}], "]"}]}]}], 
+    "\n", " ", "]"}]}], "\n"}]], "Code",
+ InitializationGroup->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"IzpisiDatoteko", "[", 
+   RowBox[{
+   "naloge_", ",", " ", "parametri_", ",", " ", "pot_", ",", " ", "koncnica_",
+     ",", " ", 
+    RowBox[{"{", "}"}]}], "]"}], " ", ":=", "\n", "  ", 
+  RowBox[{"Sequence", "[", "]"}]}]], "Code",
+ InitializationGroup->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"IzpisiDatoteko", "[", 
+   RowBox[{
+   "naloge_", ",", " ", "parametri_", ",", " ", "pot_", ",", " ", "koncnica_",
+     ",", " ", 
+    RowBox[{"{", 
+     RowBox[{"header_", ",", " ", "template_", ",", " ", "footer_"}], "}"}]}],
+    "]"}], " ", ":=", "\n", "  ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "datoteka", "}"}], ",", "\n", "    ", 
+    RowBox[{
+     RowBox[{"datoteka", " ", "=", " ", 
+      RowBox[{"OpenWrite", "[", 
+       RowBox[{"pot", ",", " ", 
+        RowBox[{"BinaryFormat", " ", "\[Rule]", " ", "True"}]}], "]"}]}], ";",
+      "\n", "    ", 
+     RowBox[{"BinaryWrite", "[", 
+      RowBox[{"datoteka", ",", " ", "header"}], "]"}], ";", "\n", "    ", 
+     RowBox[{"Do", "[", "\n", "      ", 
+      RowBox[{
+       RowBox[{"Block", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"student", " ", "=", " ", 
+           RowBox[{"naloga", "[", 
+            RowBox[{"[", "1", "]"}], "]"}]}], "}"}], ",", "\n", "        ", 
+         RowBox[{"Izpisi", "[", 
+          RowBox[{"parametri", ",", " ", 
+           RowBox[{"naloga", "[", 
+            RowBox[{"[", "2", "]"}], "]"}], ",", " ", 
+           RowBox[{"template", " ", "<>", " ", "\"\<\\n\>\""}], ",", " ", 
+           "datoteka"}], "]"}]}], "\n", "      ", "]"}], ",", "\n", "    ", 
+       RowBox[{"{", 
+        RowBox[{"naloga", ",", " ", "naloge"}], "}"}]}], "]"}], ";", "\n", 
+     "    ", 
+     RowBox[{"BinaryWrite", "[", 
+      RowBox[{"datoteka", ",", " ", "footer"}], "]"}], ";", "\n", "    ", 
+     RowBox[{"Close", "[", "datoteka", "]"}], ";", "\n", "    ", 
+     RowBox[{"Return", "[", 
+      RowBox[{"\"\<\[Dash] datoteko \>\"", " ", "<>", " ", "pot"}], "]"}]}]}],
+    "\n", "  ", "]"}]}]], "Code",
+ InitializationGroup->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Izpisi", "[", 
+   RowBox[{
+   "parametri_", ",", " ", "vrednostiParametrov_", ",", " ", "template_", ",",
+     " ", "channel_"}], "]"}], " ", ":=", "\n", "  ", 
+  RowBox[{"With", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"vsiParametri", " ", "=", " ", 
+      RowBox[{"Flatten", "[", "parametri", "]"}]}], "}"}], ",", "\n", "    ", 
+    
+    RowBox[{"Block", "[", 
+     RowBox[{"vsiParametri", ",", "\n", "      ", 
+      RowBox[{
+       RowBox[{"parametri", " ", "=", " ", "vrednostiParametrov"}], ";", "\n",
+        "      ", 
+       RowBox[{"Module", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"tempFileIn", ",", " ", "tempFileOut"}], "}"}], ",", 
+         "\[IndentingNewLine]", "        ", 
+         RowBox[{
+          RowBox[{"tempFileIn", " ", "=", " ", 
+           RowBox[{"FileNameJoin", "[", 
+            RowBox[{"{", 
+             RowBox[{"$TemporaryDirectory", ",", " ", "\"\<in\>\""}], "}"}], 
+            "]"}]}], ";", "\[IndentingNewLine]", "        ", 
+          RowBox[{"tempFileOut", " ", "=", " ", 
+           RowBox[{"FileNameJoin", "[", 
+            RowBox[{"{", 
+             RowBox[{"$TemporaryDirectory", ",", " ", "\"\<out\>\""}], "}"}], 
+            "]"}]}], ";", "\n", "        ", 
+          RowBox[{"BinaryWrite", "[", 
+           RowBox[{"tempFileIn", ",", " ", "template"}], "]"}], ";", " ", 
+          RowBox[{"Close", "[", "tempFileIn", "]"}], ";", 
+          "\[IndentingNewLine]", "        ", 
+          RowBox[{"Splice", "[", 
+           RowBox[{"tempFileIn", ",", " ", "tempFileOut", ",", " ", 
+            RowBox[{"FormatType", " ", "\[Rule]", " ", "StandardForm"}]}], 
+           "]"}], ";", "\[IndentingNewLine]", "        ", 
+          RowBox[{"BinaryWrite", "[", 
+           RowBox[{"channel", ",", " ", 
+            RowBox[{"BinaryReadList", "[", "tempFileOut", "]"}]}], "]"}], ";",
+           "\n", "        ", 
+          RowBox[{"DeleteFile", "[", 
+           RowBox[{"{", 
+            RowBox[{"tempFileIn", ",", " ", "tempFileOut"}], "}"}], "]"}]}]}],
+         "\n", "      ", "]"}]}]}], "\n", "    ", "]"}]}], "\n", "  ", 
+   "]"}]}]], "Code",
+ InitializationGroup->True],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"SestaviNaloge", "[", 
+   RowBox[{"datotekaNaloge_", ",", " ", "nalog___", ",", " ", 
+    RowBox[{"OptionsPattern", "[", 
+     RowBox[{"{", "\n", "  ", 
+      RowBox[{
+       RowBox[{"CiljniDirektorij", " ", "\[Rule]", " ", 
+        RowBox[{"NotebookDirectory", "[", "]"}]}], ",", " ", 
+       RowBox[{
+       "SeznamStudentov", " ", "\[Rule]", " ", "\"\<studentje.csv\>\""}], ",",
+        " ", 
+       RowBox[{"KodnaTabela", " ", "\[Rule]", " ", "\"\<UTF8\>\""}]}], "}"}], 
+     "]"}]}], "]"}], " ", ":=", "\n", "  ", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{
+     "studentje", ",", " ", "podatki", ",", " ", "encoding", ",", " ", 
+      "directory", ",", " ", 
+      RowBox[{"naloge", " ", "=", " ", 
+       RowBox[{"List", "[", "nalog", "]"}]}], ",", " ", "pot", ",", " ", 
+      "izpisi", ",", " ", "ustvarjene"}], "}"}], ",", "\n", "    ", 
+    RowBox[{
+     RowBox[{"encoding", " ", "=", " ", "$CharacterEncoding"}], ";", "\n", 
+     "    ", 
+     RowBox[{"directory", " ", "=", " ", 
+      RowBox[{"Directory", "[", "]"}]}], ";", "\n", "    ", 
+     RowBox[{"$CharacterEncoding", " ", "=", " ", 
+      RowBox[{"OptionValue", "[", "KodnaTabela", "]"}]}], ";", "\n", "    ", 
+     RowBox[{"SetDirectory", "[", 
+      RowBox[{"NotebookDirectory", "[", "]"}], "]"}], ";", "\n", "    ", 
+     RowBox[{"studentje", " ", "=", " ", 
+      RowBox[{"Import", "[", 
+       RowBox[{
+        RowBox[{"OptionValue", "[", "SeznamStudentov", "]"}], ",", " ", 
+        RowBox[{
+        "CharacterEncoding", " ", "\[Rule]", " ", "$CharacterEncoding"}]}], 
+       "]"}]}], ";", "\n", "    ", 
+     RowBox[{"podatki", " ", "=", " ", 
+      RowBox[{"PripraviNaloge", "[", 
+       RowBox[{"naloge", ",", " ", "studentje"}], "]"}]}], ";", "\n", "    ", 
+     
+     RowBox[{"pot", " ", "=", " ", 
+      RowBox[{"FileNameJoin", "[", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"OptionValue", "[", "CiljniDirektorij", "]"}], ",", " ", 
+         RowBox[{"FileBaseName", "[", "datotekaNaloge", "]"}]}], "}"}], 
+       "]"}]}], ";", "\n", "\n", "    ", 
+     RowBox[{"izpisi", " ", "=", " ", 
+      RowBox[{"DialogInput", "[", 
+       RowBox[{"Column", "[", 
+        RowBox[{
+         RowBox[{"{", "\n", "      ", 
+          RowBox[{
+           RowBox[{"Manipulate", "[", "\n", "        ", 
+            RowBox[{
+             RowBox[{"Column", "[", 
+              RowBox[{"Table", "[", "\[IndentingNewLine]", "         ", 
+               RowBox[{
+                RowBox[{"Panel", "[", "\[IndentingNewLine]", "           ", 
+                 RowBox[{
+                  RowBox[{"TableForm", "[", 
+                   RowBox[{
+                    RowBox[{"{", 
+                    RowBox[{
+                    RowBox[{"naloge", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"j", ",", " ", "2"}], "]"}], "]"}], ",", " ", 
+                    RowBox[{"podatki", "[", 
+                    RowBox[{"[", 
+                    RowBox[{"i", ",", " ", "2", ",", " ", "j"}], "]"}], 
+                    "]"}]}], "}"}], ",", "\[IndentingNewLine]", "           ", 
+                    RowBox[{"TableDepth", " ", "\[Rule]", " ", "2"}], ",", 
+                    " ", 
+                    RowBox[{"TableDirections", " ", "\[Rule]", " ", "Row"}], 
+                    ",", " ", 
+                    RowBox[{"TableAlignments", " ", "\[Rule]", " ", "Top"}]}],
+                    "]"}], ",", "\[IndentingNewLine]", "           ", 
+                  RowBox[{"naloge", "[", 
+                   RowBox[{"[", 
+                    RowBox[{"j", ",", " ", "1"}], "]"}], "]"}]}], 
+                 "\[IndentingNewLine]", "         ", "]"}], ",", " ", 
+                RowBox[{"{", 
+                 RowBox[{"j", ",", " ", 
+                  RowBox[{"Length", "[", "naloge", "]"}]}], "}"}]}], "]"}], 
+              "]"}], ",", "\n", "      ", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"{", 
+                RowBox[{
+                "i", ",", " ", "1", ",", " ", "\"\<\[SHacek]tudent\>\""}], 
+                "}"}], ",", " ", "1", ",", " ", 
+               RowBox[{"Length", "[", "studentje", "]"}], ",", " ", "1"}], 
+              "}"}], ",", "\n", "      ", 
+             RowBox[{"Dynamic", "[", 
+              RowBox[{"ImeStudenta", "[", 
+               RowBox[{"studentje", "[", 
+                RowBox[{"[", "i", "]"}], "]"}], "]"}], "]"}]}], "\n", 
+            "      ", "]"}], ",", "\n", "      ", 
+           RowBox[{
+           "TextCell", "[", "\"\<Ste zadovoljni z nalogami?\>\"", "]"}], ",", 
+           "\n", "      ", 
+           RowBox[{"Row", "[", 
+            RowBox[{"{", "\n", "        ", 
+             RowBox[{
+              RowBox[{"Button", "[", 
+               RowBox[{"\"\<Ne, prekini sestavljanje\>\"", ",", " ", 
+                RowBox[{"DialogReturn", "[", "False", "]"}]}], "]"}], ",", 
+              "\n", "        ", 
+              RowBox[{"DefaultButton", "[", 
+               RowBox[{"\"\<Da, nadaljuj z izpisom datotek\>\"", ",", " ", 
+                RowBox[{"DialogReturn", "[", "True", "]"}]}], "]"}]}], "\n", 
+             "      ", "}"}], "]"}]}], "\n", "    ", "}"}], ",", " ", 
+         "Left"}], "]"}], "]"}]}], ";", "\n", "    ", 
+     RowBox[{"While", "[", 
+      RowBox[{"izpisi", ",", "\n", "      ", 
+       RowBox[{
+        RowBox[{"ustvarjene", " ", "=", " ", 
+         RowBox[{"IzpisiNalogo", "[", 
+          RowBox[{"podatki", ",", " ", 
+           RowBox[{"Last", " ", "/@", " ", "naloge"}], ",", " ", "pot", ",", 
+           " ", "datotekaNaloge"}], "]"}]}], ";", "\n", "      ", 
+        RowBox[{"izpisi", " ", "=", " ", 
+         RowBox[{"DialogInput", "[", 
+          RowBox[{"Column", "[", 
+           RowBox[{
+            RowBox[{"{", "\n", "        ", 
+             RowBox[{
+              RowBox[{"TextCell", "[", "\"\<Ustvaril sem:\>\"", "]"}], ",", 
+              "\n", "        ", 
+              RowBox[{"Sequence", " ", "@@", " ", 
+               RowBox[{"(", 
+                RowBox[{"TextCell", " ", "/@", " ", "ustvarjene"}], ")"}]}], 
+              ",", "\n", "        ", 
+              RowBox[{
+              "TextCell", "[", 
+               "\"\<Ste zadovoljni z ustvarjenimi datotekami?\>\"", "]"}], 
+              ",", "\n", "        ", 
+              RowBox[{"Row", "[", 
+               RowBox[{"{", "\n", "          ", 
+                RowBox[{
+                 RowBox[{"Button", "[", 
+                  RowBox[{"\"\<Ne, ponovno ustvari datoteke\>\"", ",", " ", 
+                   RowBox[{"DialogReturn", "[", "True", "]"}]}], "]"}], ",", 
+                 "\n", "          ", 
+                 RowBox[{"DefaultButton", "[", 
+                  RowBox[{
+                  "\"\<Da, kon\[CHacek]aj s sestavljanjem\>\"", ",", " ", 
+                   RowBox[{"DialogReturn", "[", "False", "]"}]}], "]"}]}], 
+                "\n", "        ", "}"}], "]"}]}], "\n", "      ", "}"}], ",", 
+            " ", "Left"}], "]"}], "]"}]}]}]}], "\n", "    ", "]"}], ";", "\n",
+      "    ", 
+     RowBox[{"$CharacterEncoding", " ", "=", " ", "encoding"}], ";", "\n", 
+     "    ", 
+     RowBox[{"SetDirectory", "[", "directory", "]"}], ";", "\n", "    ", 
+     "Null"}]}], "\n", "  ", "]"}]}]], "Code",
+ InitializationGroup->True]
+}, Closed]]
+}, Closed]]
+}, Open  ]]
+},
+AutoGeneratedPackage->None,
+WindowSize->{1253, 748},
+WindowMargins->{{Automatic, -44}, {Automatic, 1}},
+ShowSelection->True,
+OutputSizeLimit->40000,
+TrackCellChangeTimes->False,
+Magnification:>FEPrivate`If[
+  FEPrivate`Equal[FEPrivate`$VersionNumber, 6.], 1.25, 1.25 Inherited],
+FrontEndVersion->"8.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (February 23, \
+2011)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[422, 15, 46, 0, 95, "Title"],
+Cell[471, 17, 188, 4, 32, "Text"],
+Cell[CellGroupData[{
+Cell[684, 25, 140, 5, 25, "ItemNumbered"],
+Cell[827, 32, 462, 17, 25, "ItemNumbered"],
+Cell[1292, 51, 49, 0, 25, "ItemNumbered"]
+}, Open  ]],
+Cell[1356, 54, 405, 8, 91, "Text"],
+Cell[CellGroupData[{
+Cell[1786, 66, 51, 0, 83, "Section"],
+Cell[1840, 68, 1360, 20, 220, "Text"],
+Cell[3203, 90, 815, 24, 91, "Input"],
+Cell[4021, 116, 168, 5, 32, "Text"],
+Cell[4192, 123, 101, 2, 33, "Input"],
+Cell[4296, 127, 1210, 18, 147, "Text"],
+Cell[5509, 147, 1843, 51, 167, "Input"],
+Cell[7355, 200, 75, 1, 33, "Input"],
+Cell[7433, 203, 599, 12, 91, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[8069, 220, 36, 0, 83, "Section"],
+Cell[8108, 222, 2814, 62, 262, "Text"],
+Cell[10925, 286, 517, 12, 110, "Input"],
+Cell[11445, 300, 116, 4, 32, "Text"],
+Cell[CellGroupData[{
+Cell[11586, 308, 174, 4, 25, "Item"],
+Cell[11763, 314, 664, 18, 42, "Item"],
+Cell[12430, 334, 854, 26, 42, "Item"]
+}, Open  ]],
+Cell[13299, 363, 126, 3, 32, "Text"],
+Cell[13428, 368, 612, 14, 129, "Input"],
+Cell[14043, 384, 145, 3, 35, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[14225, 392, 33, 0, 83, "Section"],
+Cell[14261, 394, 136, 3, 32, "Text"],
+Cell[14400, 399, 815, 24, 91, "Input"],
+Cell[15218, 425, 1843, 51, 167, "Input"],
+Cell[17064, 478, 75, 1, 33, "Input"],
+Cell[17142, 481, 517, 12, 110, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[17696, 498, 32, 0, 83, "Section"],
+Cell[17731, 500, 135, 3, 32, "Text"],
+Cell[CellGroupData[{
+Cell[17891, 507, 90, 2, 42, "Subsection",
+ InitializationCell->True,
+ InitializationGroup->True],
+Cell[17984, 511, 1570, 37, 117, "Code",
+ InitializationGroup->True]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[19591, 553, 95, 2, 31, "Subsection",
+ InitializationCell->True,
+ InitializationGroup->True],
+Cell[19689, 557, 150, 4, 53, "Code",
+ InitializationGroup->True],
+Cell[19842, 563, 696, 19, 111, "Code",
+ InitializationGroup->True],
+Cell[20541, 584, 749, 19, 149, "Code",
+ InitializationGroup->True],
+Cell[21293, 605, 861, 22, 187, "Code",
+ InitializationGroup->True],
+Cell[22157, 629, 709, 20, 73, "Code",
+ InitializationGroup->True]
+}, Closed]],
+Cell[CellGroupData[{
+Cell[22903, 654, 94, 2, 31, "Subsection",
+ InitializationCell->True,
+ InitializationGroup->True],
+Cell[23000, 658, 1641, 37, 225, "Code",
+ InitializationGroup->True],
+Cell[24644, 697, 2239, 55, 301, "Code",
+ InitializationGroup->True],
+Cell[26886, 754, 294, 8, 73, "Code",
+ InitializationGroup->True],
+Cell[27183, 764, 1775, 43, 282, "Code",
+ InitializationGroup->True],
+Cell[28961, 809, 2179, 50, 301, "Code",
+ InitializationGroup->True],
+Cell[31143, 861, 7263, 158, 871, "Code",
+ InitializationGroup->True]
+}, Closed]]
+}, Closed]]
+}, Open  ]]
+}
+]
+*)
+

@@ -1,0 +1,115 @@
+%============================================================================%
+naloge
+%----------------------------------------------------------------------------%
+% Vsak del vzorčne datoteke se začne in konča z vrstico enačajev, ter je
+% ločen na poddele z vrstico minusov. Najbolje bo, da te vrstice pustite pri
+% miru.
+
+% Če je del, tako kot na primer ta, ločen le na dva poddela, bo zanj vsak
+% študent dobil svojo datoteko.
+%   1. poddel pove direktorij, v katerem bodo zbrane vse te datoteke
+%      V tem primeru je to direktorij "naloge".
+%   2. poddel je vzorec datoteke z nalogo.
+
+% Vzorec je običajna LaTeXovska datoteka (lahko tudi kaj drugega), ki ima na
+% nekaterih mestih lomljene oklepaje z zvezdicami. Vse med temi oklepaji bo
+% Mathematica nadomestila s svojimi izračuni. Na primer, kjer v vzorcu
+% piše <* 1 + 2 *>, bo v ustvarjeni datoteki pisalo 3.
+% Med oklepaje lahko pišete poljubne ukaze za Mathematico, vendar je bolje,
+% če se omejite na enostavnejše. Ponavadi bodo ti ukazi zgolj vrednosti
+% spremenljivk, ki hranijo podatke o nalogah.
+
+\documentclass{article} % zaradi enostavnosti primer uporablja razred article
+                        % vendar priporočamo uporabo paketa za izpite, ki se
+                        % nahaja na: http://www.fmf.uni-lj.si/~pretnar/latex/
+\usepackage[utf8]{inputenc}
+
+\begin{document}
+
+\title{Programska oprema pri pouku: primer domače naloge}
+\author{<* ImeStudenta[student] *>} % Poleg podatkov o nalogah imate na voljo
+                                    % spremenljivko student, s katero dostopate
+                                    % do podatkov o trenutnem študentu.
+                                    % V pomoč sta vam funkciji ImeStudenta in
+                                    % VpisnaStevilka.
+
+\maketitle
+
+\begin{enumerate}
+  \item Izračunajte ničle polinoma
+  \[
+    p(x) = <* TeXForm[polinom] *> % Na tem mestu v kodo vstavimo izraz, ki
+                                  % predstavlja polinom. Mathematica ga zna
+                                  % z ukazom TeXForm pretvoriti v LaTeXu
+                                  % prijazno obliko.
+  \]
+
+  \item Izračunajte ničle in pole funkcije
+  \[
+    q(x) = <* TeXForm[racionalna] *> % Vstavimo tudi racionalno funkcijo.
+  \]
+\end{enumerate}
+
+\end{document}
+%============================================================================%
+
+
+%============================================================================%
+resitve.tex
+%----------------------------------------------------------------------------%
+% Kadar pa je del, tako kot ta, ločen na štiri poddele, se bo ustvarila
+% le ena datoteka za vse študente.
+%   1. poddel pove ime datoteke. V tem primeru je to "resitve.tex".
+%   2. poddel je glava datoteke.
+%   3. poddel je tisti del datoteke, ki se bo ponovil za vsakega študenta.
+%      Ponavadi bo vseboval rešitve.
+%   4. poddel je rep datoteke.
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{longtable}
+\usepackage{booktabs}
+
+\begin{document}
+
+\title{Programska oprema pri pouku: primer domače naloge}
+\author{Rešitve}
+\maketitle
+
+\begin{description}
+%----------------------------------------------------------------------------%
+  \item[<* ImeStudenta[student] *>] \hfill
+  \begin{itemize}
+    \item $p(x) = <* TeXForm[polinom] *>$;
+          ničle: $<* niclePolinoma *>$;
+    \item $q(x) = <* TeXForm[racionalna] *>$;
+          ničle: $<* nicleRacionalne *>$;
+          poli: $<* poli *>$.
+  \end{itemize}
+%----------------------------------------------------------------------------%
+\end{description}
+\end{document}
+%============================================================================%
+
+
+%============================================================================%
+latexiraj.bat
+%----------------------------------------------------------------------------%
+REM Kljub temu, da boste v osnovi ustvarjali datoteke v LaTeXu, lahko
+REM ustvarjate tudi druge datoteke, na primer to skripto, ki pod Windowsi
+REM požene LaTeX na vseh ustvarjenih .tex datotekah.
+
+REM Komentarji se v tem primeru ne začnejo z %, temveč z REM
+
+REM Najprej prevedemo datoteko z rešitvami ter pobrišemo pomožne datoteke.
+pdflatex resitve.tex
+del *.log *.aux
+
+REM Nato gremo v direktorij z nalogami in postopek ponovimo še za naloge.
+cd naloge
+
+%----------------------------------------------------------------------------%
+pdflatex <* ImeDatoteke[student] *>.tex
+%----------------------------------------------------------------------------%
+del *.log *.aux
+%============================================================================%
