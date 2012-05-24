@@ -3,10 +3,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[         0,          0]
-NotebookDataLength[     42050,       1141]
-NotebookOptionsPosition[     38743,       1029]
-NotebookOutlinePosition[     39299,       1051]
-CellTagsIndexPosition[     39256,       1048]
+NotebookDataLength[     41829,       1137]
+NotebookOptionsPosition[     38523,       1025]
+NotebookOutlinePosition[     39079,       1047]
+CellTagsIndexPosition[     39036,       1044]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -138,10 +138,9 @@ matrike, racionalne lastne vrednosti, \[OpenCurlyDoubleQuote]lepe\
 V ta namen lahko uporabite funkcijo ",
  StyleBox["Preveri", "Input"],
  ", ki sprejme pogoj. \[CapitalCHacek]e je ta pogoj izpolnjen, se izvajanje \
-nadaljuje, sicer pa program javi (ne\[SHacek]kodljivo) napako in podatki se \
-za\[CHacek]nejo pripravljati znova. V na\[SHacek]em primeru lahko neodvisno \
-izberemo ni\[CHacek]le obeh polinomov ter \[SHacek]ele nato preverimo, da \
-jima nobena ni\[CHacek]la ni skupna."
+nadaljuje, sicer pa se podatki za\[CHacek]nejo pripravljati znova. V na\
+\[SHacek]em primeru lahko neodvisno izberemo ni\[CHacek]le obeh polinomov ter \
+\[SHacek]ele nato preverimo, da jima nobena ni\[CHacek]la ni skupna."
 }], "Text"],
 
 Cell[BoxData[
@@ -201,9 +200,6 @@ Cell[BoxData[
  RowBox[{"PrimeriNaloge", "[", "Racionalna", "]"}]], "Input"],
 
 Cell[TextData[{
- "Ko izra\[CHacek]unamo nekaj primerov, vidimo, da pogoj nekajkrat ni veljal, \
-vendar program posku\[SHacek]a toliko \[CHacek]asa, dokler ne najde ustreznih \
-podatkov.\n",
  StyleBox["Pozor:",
   FontWeight->"Bold"],
  " pazite, da va\[SHacek]a naloga lahko zado\[SHacek]\[CHacek]a pogojem, ki \
@@ -597,13 +593,14 @@ Cell[BoxData[
      RowBox[{"SeedRandom", "[", 
       RowBox[{"VpisnaStevilka", "[", "student", "]"}], "]"}], ";", "\n", 
      "    ", 
-     RowBox[{"While", "[", 
-      RowBox[{
-       RowBox[{"naloga", " ", "\[Equal]", " ", "Null"}], ",", " ", 
-       RowBox[{"naloga", " ", "=", " ", 
-        RowBox[{"Catch", "[", 
-         RowBox[{"problem", "[", "student", "]"}], "]"}]}]}], "]"}], ";", 
-     "\n", "    ", "naloga"}]}], "\n", "  ", "]"}]}]], "Code",
+     RowBox[{"Quiet", "[", 
+      RowBox[{"While", "[", 
+       RowBox[{
+        RowBox[{"naloga", " ", "\[Equal]", " ", "Null"}], ",", " ", 
+        RowBox[{"naloga", " ", "=", " ", 
+         RowBox[{"Catch", "[", 
+          RowBox[{"problem", "[", "student", "]"}], "]"}]}]}], "]"}], "]"}], 
+     ";", "\n", "    ", "naloga"}]}], "\n", "  ", "]"}]}]], "Code",
  InitializationGroup->True],
 
 Cell[BoxData[
@@ -641,9 +638,8 @@ Cell[BoxData[
      RowBox[{"student", ",", " ", 
       RowBox[{"Table", "[", 
        RowBox[{
-        RowBox[{"Quiet", "[", 
-         RowBox[{"PripraviNalogo", "[", 
-          RowBox[{"problem", ",", " ", "student"}], "]"}], "]"}], ",", " ", 
+        RowBox[{"PripraviNalogo", "[", 
+         RowBox[{"problem", ",", " ", "student"}], "]"}], ",", " ", 
         RowBox[{"{", 
          RowBox[{"problem", ",", " ", 
           RowBox[{"First", " ", "/@", " ", "problemi"}]}], "}"}]}], "]"}]}], 
@@ -1065,73 +1061,73 @@ Cell[1795, 67, 1359, 20, 276, "Text"],
 Cell[3157, 89, 815, 24, 91, "Input"],
 Cell[3975, 115, 168, 5, 32, "Text"],
 Cell[4146, 122, 101, 2, 33, "Input"],
-Cell[4250, 126, 1210, 18, 185, "Text"],
-Cell[5463, 146, 1843, 51, 167, "Input"],
-Cell[7309, 199, 75, 1, 33, "Input"],
-Cell[7387, 202, 599, 12, 129, "Text"]
+Cell[4250, 126, 1163, 17, 185, "Text"],
+Cell[5416, 145, 1843, 51, 167, "Input"],
+Cell[7262, 198, 75, 1, 33, "Input"],
+Cell[7340, 201, 425, 9, 91, "Text"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8023, 219, 36, 0, 83, "Section"],
-Cell[8062, 221, 2814, 62, 340, "Text"],
-Cell[10879, 285, 517, 12, 110, "Input"],
-Cell[11399, 299, 116, 4, 32, "Text"],
+Cell[7802, 215, 36, 0, 83, "Section"],
+Cell[7841, 217, 2814, 62, 340, "Text"],
+Cell[10658, 281, 517, 12, 110, "Input"],
+Cell[11178, 295, 116, 4, 32, "Text"],
 Cell[CellGroupData[{
-Cell[11540, 307, 174, 4, 42, "Item"],
-Cell[11717, 313, 664, 18, 58, "Item"],
-Cell[12384, 333, 854, 26, 58, "Item"]
+Cell[11319, 303, 174, 4, 42, "Item"],
+Cell[11496, 309, 664, 18, 58, "Item"],
+Cell[12163, 329, 854, 26, 58, "Item"]
 }, Open  ]],
-Cell[13253, 362, 126, 3, 32, "Text"],
-Cell[13382, 367, 612, 14, 129, "Input"],
-Cell[13997, 383, 145, 3, 35, "Text"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[14179, 391, 33, 0, 83, "Section"],
-Cell[14215, 393, 136, 3, 32, "Text"],
-Cell[14354, 398, 815, 24, 91, "Input"],
-Cell[15172, 424, 1843, 51, 167, "Input"],
-Cell[17018, 477, 75, 1, 33, "Input"],
-Cell[17096, 480, 517, 12, 110, "Input"]
+Cell[13032, 358, 126, 3, 32, "Text"],
+Cell[13161, 363, 612, 14, 129, "Input"],
+Cell[13776, 379, 145, 3, 35, "Text"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[17650, 497, 32, 0, 83, "Section"],
-Cell[17685, 499, 134, 3, 32, "Text"],
+Cell[13958, 387, 33, 0, 83, "Section"],
+Cell[13994, 389, 136, 3, 32, "Text"],
+Cell[14133, 394, 815, 24, 91, "Input"],
+Cell[14951, 420, 1843, 51, 167, "Input"],
+Cell[16797, 473, 75, 1, 33, "Input"],
+Cell[16875, 476, 517, 12, 110, "Input"]
+}, Open  ]],
 Cell[CellGroupData[{
-Cell[17844, 506, 90, 2, 42, "Subsection",
+Cell[17429, 493, 32, 0, 83, "Section"],
+Cell[17464, 495, 134, 3, 32, "Text"],
+Cell[CellGroupData[{
+Cell[17623, 502, 90, 2, 42, "Subsection",
  InitializationCell->True,
  InitializationGroup->True],
-Cell[17937, 510, 1823, 41, 289, "Code",
+Cell[17716, 506, 1823, 41, 289, "Code",
  InitializationGroup->True]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[19797, 556, 95, 2, 31, "Subsection",
+Cell[19576, 552, 95, 2, 31, "Subsection",
  InitializationCell->True,
  InitializationGroup->True],
-Cell[19895, 560, 150, 4, 66, "Code",
+Cell[19674, 556, 150, 4, 53, "Code",
  InitializationGroup->True],
-Cell[20048, 566, 696, 19, 138, "Code",
+Cell[19827, 562, 696, 19, 111, "Code",
  InitializationGroup->True],
-Cell[20747, 587, 749, 19, 186, "Code",
+Cell[20526, 583, 790, 20, 149, "Code",
  InitializationGroup->True],
-Cell[21499, 608, 861, 22, 233, "Code",
+Cell[21319, 605, 861, 22, 187, "Code",
  InitializationGroup->True],
-Cell[22363, 632, 709, 20, 91, "Code",
+Cell[22183, 629, 669, 19, 73, "Code",
  InitializationGroup->True]
 }, Closed]],
 Cell[CellGroupData[{
-Cell[23109, 657, 94, 2, 31, "Subsection",
+Cell[22889, 653, 94, 2, 31, "Subsection",
  InitializationCell->True,
  InitializationGroup->True],
-Cell[23206, 661, 1641, 37, 225, "Code",
+Cell[22986, 657, 1641, 37, 281, "Code",
  InitializationGroup->True],
-Cell[24850, 700, 2239, 55, 301, "Code",
+Cell[24630, 696, 2239, 55, 376, "Code",
  InitializationGroup->True],
-Cell[27092, 757, 294, 8, 73, "Code",
+Cell[26872, 753, 294, 8, 91, "Code",
  InitializationGroup->True],
-Cell[27389, 767, 1775, 43, 282, "Code",
+Cell[27169, 763, 1775, 43, 352, "Code",
  InitializationGroup->True],
-Cell[29167, 812, 2270, 52, 301, "Code",
+Cell[28947, 808, 2270, 52, 376, "Code",
  InitializationGroup->True],
-Cell[31440, 866, 7263, 158, 871, "Code",
+Cell[31220, 862, 7263, 158, 1088, "Code",
  InitializationGroup->True]
 }, Closed]]
 }, Open  ]]
