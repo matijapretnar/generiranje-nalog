@@ -1,0 +1,653 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 8.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[     21806,        644]
+NotebookOptionsPosition[     19693,        574]
+NotebookOutlinePosition[     20049,        590]
+CellTagsIndexPosition[     20006,        587]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Generiranje nalog", "Title"],
+
+Cell["\<\
+Spodnji program za dani seznam \[SHacek]tudentov omogo\[CHacek]a generiranje \
+naklju\[CHacek]nih nalog ter njihovih re\[SHacek]itev. Program sprejme:\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "seznam nalog (vsaka je opisana s programom v ",
+ StyleBox["Mathematici",
+  FontSlant->"Italic"],
+ "),"
+}], "ItemNumbered"],
+
+Cell[TextData[{
+ "vzor\[CHacek]no datoteko (ponavadi v ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    StyleBox[
+     RowBox[{"L", 
+      StyleBox[
+       AdjustmentBox["A",
+        BoxBaselineShift->-0.4,
+        BoxMargins->{{-0.5, -0.3}, {0, 0}}],
+       FontSize->10], "T", 
+      AdjustmentBox["E",
+       BoxBaselineShift->0.5,
+       BoxMargins->{{-0.3, 0}, {0, 0}}], "Xu"}]],
+    SingleLetterItalics->False], TraditionalForm]]],
+ ") in"
+}], "ItemNumbered"],
+
+Cell["seznam \[SHacek]tudentov,", "ItemNumbered"]
+}, Open  ]],
+
+Cell["\<\
+nato pa ustvari posamezne datoteke z nalogami in skupno datoteko z \
+re\[SHacek]itvami. Naloge niso \[CHacek]isto naklju\[CHacek]ne, saj vam \
+program za istega \[SHacek]tudenta vedno vrne enako nalogo. To vam omogo\
+\[CHacek]a, da naloge naknadno popravljate, ne da bi se vam pri tem v celoti \
+spremenile.
+
+Za idejo se zahvaljujem Gregorju \[CapitalSHacek]egi.\
+\>", "Text"],
+
+Cell[CellGroupData[{
+
+Cell["Namestitev", "Section",
+ CellChangeTimes->{{3.552203235154327*^9, 3.5522032365034037`*^9}}],
+
+Cell["\<\
+Program za generiranje nalog najla\[ZHacek]e namestite na slede\[CHacek] na\
+\[CHacek]in:\
+\>", "Text",
+ CellChangeTimes->{{3.552203680633607*^9, 3.552203825684712*^9}, {
+  3.5522039247788887`*^9, 3.552204089416544*^9}, {3.552204128375712*^9, 
+  3.552204150047385*^9}, {3.552204218386648*^9, 3.552204233325696*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ "V meniju ",
+ StyleBox["File", "Input"],
+ " izberite ",
+ StyleBox["Install\[Ellipsis]", "Input"],
+ ", da odprete okno za namestitev datotek."
+}], "ItemNumbered",
+ CellChangeTimes->{{3.552204250366148*^9, 3.5522043017225933`*^9}, {
+  3.552204622095635*^9, 3.552204629148407*^9}}],
+
+Cell[TextData[{
+ "Za ",
+ StyleBox["Type of Item to Install", "Input"],
+ " izberite ",
+ StyleBox["Package", "Input"],
+ "."
+}], "ItemNumbered",
+ CellChangeTimes->{{3.552204250366148*^9, 3.5522043516336107`*^9}}],
+
+Cell[TextData[{
+ "Za ",
+ StyleBox["Source", "Input"],
+ " izberite ",
+ StyleBox["From File\[Ellipsis]", "Input"],
+ " ter poi\[SHacek]\[CHacek]ite datoteko ",
+ StyleBox["generiranje.m", "Input"],
+ ". "
+}], "ItemNumbered",
+ CellChangeTimes->{{3.552204250366148*^9, 3.552204357489455*^9}}],
+
+Cell[TextData[{
+ "Za ",
+ StyleBox["Install Name", "Input"],
+ " vpi\[SHacek]ite ",
+ StyleBox["generiranje", "Input"],
+ "."
+}], "ItemNumbered",
+ CellChangeTimes->{{3.552204250366148*^9, 3.5522043864024763`*^9}}],
+
+Cell["\<\
+Izberite, ali \[ZHacek]elite namestitev samo zase ali pa za vse uporabnike, \
+in potrdite izbiro.\
+\>", "ItemNumbered",
+ CellChangeTimes->{{3.552204250366148*^9, 3.552204422573909*^9}}],
+
+Cell["\<\
+Ko datoteko namestite, jo nalo\[ZHacek]ite s spodnjim ukazom. \
+\[CapitalCHacek]e ukaz ne javi nobene napake, je bila namestitev \
+uspe\[SHacek]na.\
+\>", "ItemNumbered",
+ CellChangeTimes->{3.552204422897429*^9}]
+}, Open  ]],
+
+Cell[BoxData[
+ RowBox[{"<<", "generiranje`"}]], "Input",
+ CellChangeTimes->{{3.5522040530507097`*^9, 3.552204056435638*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Pripravljanje podatkov za naloge", "Section"],
+
+Cell[TextData[{
+ "Prvi korak generiranja nalog je ustvarjanje podatkov naloge. Ti vsebujejo \
+vse klju\[CHacek]ne podatke, ki jih ho\[CHacek]emo izpisati: tako nalogo kot \
+tudi njene re\[SHacek]itve. Ne vsebujejo pa spremnega besedila, saj bo to v \
+vzor\[CHacek]ni datoteki.\n\nVsako nalogo predstavimo s funkcijo, ki sprejme \
+podatke o \[SHacek]tudentu (seznam, ki vsebuje vpisno \[SHacek]tevilko, \
+priimek in ime) in vrne seznam podatkov o nalogi. Podatkov o \[SHacek]tudentu \
+ni treba uporabiti, lahko pa z njimi sestavite nalogo, kjer se v odgovoru \
+skriva vpisna \[SHacek]tevilka ali \[SHacek]tudentove za\[CHacek]etnice.\n\n\
+Na\[CHacek]eloma s samo obliko funkcije niste omejeni, vendar je \
+ve\[CHacek]inoma najprimernej\[SHacek]a oblika ukaz ",
+ StyleBox["Module", "Input"],
+ ", v katerem na\[SHacek]tejemo lokalne spremenljivke, ki jim postopoma \
+nastavljamo vrednosti (obi\[CHacek]ajno z ukazi za naklju\[CHacek]ne izbire), \
+zadnji ukaz pa je seznam vrednosti, ki bi jih vrnili.\n\nZa za\[CHacek]etek \
+si definirajmo nalogo, ki bo od \[SHacek]tudenta zahtevala ni\[CHacek]le \
+danega polinoma. Najenostavnej\[SHacek]i pristop je, da si najprej izmislimo \
+ni\[CHacek]le, nato pa iz njih rekonstruiramo polinom.\nIzvedite spodnjo \
+definicijo (in Mathematici potrdite, da naj poprej izvede \[SHacek]e \
+inicializacijske ukaze)."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Polinom", "[", "student_", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"nicle", ",", "polinom"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"nicle", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"polinom", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "nicla"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"nicla", ",", "nicle"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"nicle", ",", "polinom"}], "}"}]}]}], "]"}]}]], "Input"],
+
+Cell[TextData[{
+ "S funkcijo ",
+ StyleBox["PrimeriNaloge", "Input"],
+ " lahko na hitro pogledamo nekaj (ne popolnoma) naklju\[CHacek]nih primerov \
+naloge."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{"PrimeriNaloge", "[", 
+  RowBox[{"Polinom", ",", " ", "10"}], "]"}]], "Input"],
+
+Cell[TextData[{
+ "V\[CHacek]asih bi radi, da va\[SHacek]a naloga zado\[SHacek]\[CHacek]a dolo\
+\[CHacek]enim pogojem. Za primer sestavimo nalogo, ki bo od \[SHacek]tudenta \
+zahtevala ni\[CHacek]le in pole dane racionalne funkcije. Za to potrebujemo \
+dva polinoma brez skupnih ni\[CHacek]el. Na\[CHacek]eloma lahko podatke \
+pripravljamo na na\[CHacek]in, pri katerem je pogojem vedno zado\[SHacek]\
+\[CHacek]eno. V tem primeru bi ni\[CHacek]le drugega polinoma izbirali le iz \
+komplementa ni\[CHacek]el prvega polinoma. Vendar ta postopek hitro odpove, \
+ko pridemo do zapletenej\[SHacek]ih pogojev (celo\[SHacek]tevilski inverz \
+matrike, racionalne lastne vrednosti, \[OpenCurlyDoubleQuote]lepe\
+\[CloseCurlyDoubleQuote] re\[SHacek]itve linearnega programa, \[Ellipsis])\n\n\
+V ta namen lahko uporabite funkcijo ",
+ StyleBox["Preveri", "Input"],
+ ", ki sprejme pogoj. \[CapitalCHacek]e je ta pogoj izpolnjen, se izvajanje \
+nadaljuje, sicer pa se podatki za\[CHacek]nejo pripravljati znova. V na\
+\[SHacek]em primeru lahko neodvisno izberemo ni\[CHacek]le obeh polinomov ter \
+\[SHacek]ele nato preverimo, da jima nobena ni\[CHacek]la ni skupna."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Racionalna", "[", "student_", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"nicle", ",", "poli", ",", "stevec", ",", "imenovalec"}], "}"}], 
+    ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"nicle", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"poli", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"(*", " ", 
+      RowBox[{"preverimo", ",", " ", 
+       RowBox[{
+       "da", " ", "imajo", " ", "ni\[CHacek]le", " ", "in", " ", "poli", " ", 
+        "prazen", " ", "presek"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"Preveri", "[", 
+      RowBox[{
+       RowBox[{"Intersection", "[", 
+        RowBox[{"nicle", ",", "poli"}], "]"}], "\[Equal]", 
+       RowBox[{"{", "}"}]}], "]"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"stevec", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "nicla"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"nicla", ",", "nicle"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"imenovalec", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "pol"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"pol", ",", "poli"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"nicle", ",", "poli", ",", 
+       RowBox[{"stevec", "/", "imenovalec"}]}], "}"}]}]}], "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"PrimeriNaloge", "[", "Racionalna", "]"}]], "Input"],
+
+Cell[TextData[{
+ StyleBox["Pozor:",
+  FontWeight->"Bold"],
+ " pazite, da va\[SHacek]a naloga lahko zado\[SHacek]\[CHacek]a pogojem, ki \
+bi jih radi. V nasprotnem primeru se bo program zapletel v neskon\[CHacek]no \
+zanko in kar naprej posku\[SHacek]al najti primerne podatke.\n\n\
+\[CapitalSHacek]e to, \[CHacek]e funkciji ",
+ StyleBox["PrimeriNaloge", "Input"],
+ " ne podamo \[SHacek]tevila, dobimo 7 primerov."
+}], "Text"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Izpisovanje nalog", "Section"],
+
+Cell[TextData[{
+ "Ko pripravite vse podatke, uporabite funkcijo ",
+ StyleBox["SestaviNaloge", "Input"],
+ ". Ta sprejme vzor\[CHacek]no datoteko (ponavadi ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    RowBox[{"L", 
+     StyleBox[
+      AdjustmentBox["A",
+       BoxBaselineShift->-0.4,
+       BoxMargins->{{-0.5, -0.3}, {0, 0}}],
+      FontSize->Smaller], "T", 
+     AdjustmentBox["E",
+      BoxBaselineShift->0.5,
+      BoxMargins->{{-0.3, 0}, {0, 0}}], "X"}],
+    SingleLetterItalics->False], TraditionalForm]]],
+ "-ovsko) in opise nalog. Nato ustvari podatke ter jih izpi\[SHacek]e v \
+datoteke. Ker boste ponavadi hoteli ustvariti ve\[CHacek] datotek (list z \
+nalogo za vsakega \[SHacek]tudenta, en list z vsemi re\[SHacek]itvami, \
+skripta za klic ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    StyleBox[
+     RowBox[{"L", 
+      StyleBox[
+       AdjustmentBox["A",
+        BoxBaselineShift->-0.4,
+        BoxMargins->{{-0.5, -0.3}, {0, 0}}],
+       FontSize->10], "T", 
+      AdjustmentBox["E",
+       BoxBaselineShift->0.5,
+       BoxMargins->{{-0.3, 0}, {0, 0}}], "Xa"}]],
+    SingleLetterItalics->False], TraditionalForm]]],
+ " na vsaki datoteki, \[Ellipsis]), je vzor\[CHacek]na datoteka razdeljena na \
+ve\[CHacek] delov. Preden nadaljujete, si oglejte vzor\[CHacek]no datoteko ",
+ StyleBox["vzorec.tex", "Input"],
+ ".\n\nVsako nalogo opi\[SHacek]ete z imenom zgoraj definirane funkcije ter s \
+seznamom spremenljivk, pod katerimi so v vzor\[CHacek]ni datoteki dostopni \
+njeni podatki. Ni potrebno, da spremenljivke ustrezajo tistim, ki ste jih \
+uporabili v funkcijah, pazite pa, da se med posameznimi nalogami ne \
+ponavljajo. Na primer, obe nalogi s polinomi in racionalnimi funkcijami \
+vsebujeta podatke o ni\[CHacek]lah. V obeh primerih lahko v funkciji, ki \
+pripravlja podatke, uporabimo spremenljivko ",
+ StyleBox["nicle", "Input"],
+ ", ko pa naloge izpisujemo, moramo ni\[CHacek]le lo\[CHacek]iti in tako se \
+na prve sklicujemo s spremenljivko ",
+ StyleBox["niclePolinoma", "Input"],
+ ", na druge pa z ",
+ StyleBox["nicleRacionalne", "Input"],
+ ".\n\nKo pokli\[CHacek]ete funkcijo ",
+ StyleBox["SestaviNaloge", "Input"],
+ ", se pripravijo podatki nalog za vse \[SHacek]tudente, vi pa dobite njihov \
+predogled. \[CapitalCHacek]e s podatki niste zadovoljni, sestavljanje \
+prekinete ter popravite funkcije, ki opisujejo naloge. \[CapitalCHacek]e ste \
+s podatki zadovoljni, izpi\[SHacek]ete datoteke. \[CapitalCHacek]e ste z \
+datotekami zadovoljni, ste kon\[CHacek]ali, \[CHacek]e pa niste, pa popravite \
+vzor\[CHacek]no datoteko ter ponovno izpi\[SHacek]ete datoteke. Datoteke se \
+vsaki\[CHacek] izpi\[SHacek]ejo na novo, vendar s starimi podatki. Tako lahko \
+delate hitre popravke v vzor\[CHacek]ni datoteki, saj se izognete pogosto \
+zamudnemu pripravljanju podatkov nalog."
+}], "Text"],
+
+Cell[BoxData[
+ RowBox[{"SestaviNaloge", "[", "\[IndentingNewLine]", 
+  RowBox[{"\"\<vzorec.tex\>\"", ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Polinom", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"niclePolinoma", ",", " ", "polinom"}], "}"}]}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Racionalna", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"nicleRacionalne", ",", " ", "poli", ",", " ", "racionalna"}], 
+      "}"}]}], "}"}]}], "\[IndentingNewLine]", "]"}]], "Input"],
+
+Cell[TextData[{
+ "Funkcija ",
+ StyleBox["SestaviNaloge", "Input"],
+ " pozna slede\[CHacek]e nastavitve:"
+}], "Text"],
+
+Cell[CellGroupData[{
+
+Cell[TextData[{
+ StyleBox["CiljniDirektorij", "Input"],
+ ", ki pove pot, kamor naj se shranijo sestavljene naloge (v osnovi se \
+shranijo v direktorij programa)."
+}], "Item"],
+
+Cell[TextData[{
+ StyleBox["SeznamStudentov", "Input"],
+ ", ki pove ime CSV datoteke (v osnovi je to ",
+ StyleBox["studentje.csv", "Input"],
+ "), v kateri so shranjeni podatki o \[SHacek]tudentih. Prvi trije stolpci \
+naj bodo: vpisna \[SHacek]tevilka, priimek in ime. Preostali stolpci lahko \
+hranijo poljubne podatke, do katerih lahko dostopate z izrazom ",
+ StyleBox["student[[", "Input"],
+ Cell[BoxData[
+  FormBox["i", TraditionalForm]]],
+ StyleBox["]]", "Input"],
+ ", kjer je ",
+ Cell[BoxData[
+  FormBox[
+   RowBox[{"i", Cell[""]}], TraditionalForm]]],
+ "\[SHacek]tevilka stolpca."
+}], "Item"],
+
+Cell[TextData[{
+ StyleBox["KodnaTabela", "Input"],
+ ", ki dolo\[CHacek]a kodno tabelo (v osnovi je to ",
+ StyleBox["UTF8", "Input"],
+ "), ki jo uporabljate za seznam \[SHacek]tudentov ter vzor\[CHacek]ne \
+datoteke. Bolje je uporabljati nastavitev ",
+ StyleBox["UTF8", "Input"],
+ ", zna pa se zgoditi, da morate uporabiti nastavitev ",
+ StyleBox["WindowsEastEurope", "Input"],
+ " (\[CHacek]e va\[SHacek] ",
+ Cell[BoxData[
+  FormBox[
+   StyleBox[
+    RowBox[{"L", 
+     StyleBox[
+      AdjustmentBox["A",
+       BoxBaselineShift->-0.4,
+       BoxMargins->{{-0.5, -0.3}, {0, 0}}],
+      FontSize->Smaller], "T", 
+     AdjustmentBox["E",
+      BoxBaselineShift->0.5,
+      BoxMargins->{{-0.3, 0}, {0, 0}}], "X"}],
+    SingleLetterItalics->False], TraditionalForm]]],
+ " urejevalnik ne pozna Unicodea) ali ",
+ StyleBox["ISO8859-2", "Input"],
+ "."
+}], "Item"]
+}, Open  ]],
+
+Cell["\<\
+Nastavitve podate tako, da jih skupaj z njihovimi vrednostmi podate na koncu \
+klica funkcije. Primer:\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"SestaviNaloge", "[", "\[IndentingNewLine]", 
+  RowBox[{"\"\<vzorec.tex\>\"", ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Polinom", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"niclePolinoma", ",", " ", "polinom"}], "}"}]}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Racionalna", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"nicleRacionalne", ",", " ", "poli", ",", " ", "racionalna"}], 
+      "}"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"CiljniDirektorij", "\[Rule]", "\"\<Namizje\>\""}]}], 
+  "\[IndentingNewLine]", "]"}]], "Input"],
+
+Cell["\<\
+Vrstni red nastavitev je poljuben. \[CapitalCHacek]e kak\[SHacek]no \
+nastavitev izpustite, se uporabi privzeta vrednost.\
+\>", "Text"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Celoten primer", "Section"],
+
+Cell["\<\
+Ko enkrat znate uporabljati program, lahko zgornjo razlago pobri\[SHacek]ete \
+in uporabljate le spodnji vzorec.\
+\>", "Text"],
+
+Cell[BoxData[
+ RowBox[{"<<", "generiranje`"}]], "Input",
+ CellChangeTimes->{{3.5522040530507097`*^9, 3.552204056435638*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Polinom", "[", "student_", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"nicle", ",", "polinom"}], "}"}], ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"nicle", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"polinom", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "nicla"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"nicla", ",", "nicle"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"nicle", ",", "polinom"}], "}"}]}]}], "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"Racionalna", "[", "student_", "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"nicle", ",", "poli", ",", "stevec", ",", "imenovalec"}], "}"}], 
+    ",", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"nicle", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"poli", "=", 
+      RowBox[{"RandomInteger", "[", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"-", "9"}], ",", "9"}], "}"}], ",", "3"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"(*", " ", 
+      RowBox[{"preverimo", ",", " ", 
+       RowBox[{
+       "da", " ", "imajo", " ", "ni\[CHacek]le", " ", "in", " ", "poli", " ", 
+        "prazen", " ", "presek"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+     RowBox[{"Preveri", "[", 
+      RowBox[{
+       RowBox[{"Intersection", "[", 
+        RowBox[{"nicle", ",", "poli"}], "]"}], "\[Equal]", 
+       RowBox[{"{", "}"}]}], "]"}], ";", "\[IndentingNewLine]", 
+     RowBox[{"stevec", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "nicla"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"nicla", ",", "nicle"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"imenovalec", "=", 
+      RowBox[{"Expand", "[", 
+       RowBox[{"Product", "[", 
+        RowBox[{
+         RowBox[{"x", "-", "pol"}], ",", 
+         RowBox[{"{", 
+          RowBox[{"pol", ",", "poli"}], "}"}]}], "]"}], "]"}]}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"{", 
+      RowBox[{"nicle", ",", "poli", ",", 
+       RowBox[{"stevec", "/", "imenovalec"}]}], "}"}]}]}], "]"}]}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"PrimeriNaloge", "[", "Racionalna", "]"}]], "Input"],
+
+Cell[BoxData[
+ RowBox[{"SestaviNaloge", "[", "\[IndentingNewLine]", 
+  RowBox[{"\"\<vzorec.tex\>\"", ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Polinom", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"niclePolinoma", ",", " ", "polinom"}], "}"}]}], "}"}], ",", 
+   "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"Racionalna", ",", " ", 
+     RowBox[{"{", 
+      RowBox[{"nicleRacionalne", ",", " ", "poli", ",", " ", "racionalna"}], 
+      "}"}]}], "}"}]}], "\[IndentingNewLine]", "]"}]], "Input"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{740, 752},
+WindowMargins->{{Automatic, 266}, {42, Automatic}},
+FrontEndVersion->"8.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (October 5, \
+2011)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[579, 22, 34, 0, 76, "Title"],
+Cell[616, 24, 174, 3, 26, "Text"],
+Cell[CellGroupData[{
+Cell[815, 31, 140, 5, 20, "ItemNumbered"],
+Cell[958, 38, 462, 17, 20, "ItemNumbered"],
+Cell[1423, 57, 49, 0, 20, "ItemNumbered"]
+}, Open  ]],
+Cell[1487, 60, 386, 8, 88, "Text"],
+Cell[CellGroupData[{
+Cell[1898, 72, 97, 1, 67, "Section"],
+Cell[1998, 75, 325, 6, 26, "Text"],
+Cell[CellGroupData[{
+Cell[2348, 85, 295, 8, 20, "ItemNumbered"],
+Cell[2646, 95, 209, 7, 20, "ItemNumbered"],
+Cell[2858, 104, 285, 9, 20, "ItemNumbered"],
+Cell[3146, 115, 209, 7, 20, "ItemNumbered"],
+Cell[3358, 124, 195, 4, 20, "ItemNumbered"],
+Cell[3556, 130, 221, 5, 22, "ItemNumbered"]
+}, Open  ]],
+Cell[3792, 138, 124, 2, 27, "Input"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[3953, 145, 51, 0, 67, "Section"],
+Cell[4007, 147, 1359, 20, 221, "Text"],
+Cell[5369, 169, 815, 24, 73, "Input"],
+Cell[6187, 195, 168, 5, 26, "Text"],
+Cell[6358, 202, 101, 2, 27, "Input"],
+Cell[6462, 206, 1163, 17, 148, "Text"],
+Cell[7628, 225, 1843, 51, 133, "Input"],
+Cell[9474, 278, 75, 1, 27, "Input"],
+Cell[9552, 281, 425, 9, 73, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10014, 295, 36, 0, 67, "Section"],
+Cell[10053, 297, 2814, 62, 256, "Text"],
+Cell[12870, 361, 517, 12, 88, "Input"],
+Cell[13390, 375, 116, 4, 26, "Text"],
+Cell[CellGroupData[{
+Cell[13531, 383, 174, 4, 20, "Item"],
+Cell[13708, 389, 598, 16, 46, "Item"],
+Cell[14309, 407, 854, 26, 46, "Item"]
+}, Open  ]],
+Cell[15178, 436, 126, 3, 26, "Text"],
+Cell[15307, 441, 612, 14, 103, "Input"],
+Cell[15922, 457, 145, 3, 28, "Text"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[16104, 465, 33, 0, 67, "Section"],
+Cell[16140, 467, 136, 3, 26, "Text"],
+Cell[16279, 472, 124, 2, 27, "Input"],
+Cell[16406, 476, 815, 24, 73, "Input"],
+Cell[17224, 502, 1843, 51, 133, "Input"],
+Cell[19070, 555, 75, 1, 27, "Input"],
+Cell[19148, 558, 517, 12, 88, "Input"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
