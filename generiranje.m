@@ -49,8 +49,17 @@ PrimeriNaloge[problem_, stevilo_:7] :=
   ]
 
 
-PripraviNaloge[problemi_, studentje_] :=
-  Table[{student, Table[PripraviNalogo[problem, student], {problem, First /@ problemi}]}, {student, studentje}]
+PripraviNaloge[problemi_, studentje_] := 
+  Module[{i = 0},
+    SetSharedVariable[i];
+    Monitor[
+      ParallelTable[{student,
+        ++i;
+        Table[Quiet[PripraviNalogo[problem, student]], {problem, 
+        First /@ problemi}]}, {student, studentje}], 
+      ProgressIndicator[i, {1, Length[studentje]}]
+    ]
+  ]
 
 
 (* ::Subsection:: *)
@@ -73,7 +82,7 @@ IzpisiDatoteko[naloge_, parametri_, pot_, koncnica_, {template_}] :=
   Module[{datoteka},
     Quiet[CreateDirectory[pot]];
     DeleteFile[FileNames[FileNameJoin[{pot, "*"}]]];
-    Do[
+    ParallelDo[
       Block[{student = naloga[[1]]},
         datoteka = OpenWrite[FileNameJoin[{pot, ImeDatoteke[student] <> "." <> koncnica}], BinaryFormat -> True];
         Izpisi[parametri, naloga[[2]], template, datoteka]
@@ -108,9 +117,10 @@ Izpisi[parametri_, vrednostiParametrov_, template_, channel_] :=
   With[{vsiParametri = Flatten[parametri]},
     Block[vsiParametri,
       parametri = vrednostiParametrov;
-      Module[{tempFileIn, tempFileOut},
-        tempFileIn = FileNameJoin[{$TemporaryDirectory, "in"}];
-        tempFileOut = FileNameJoin[{$TemporaryDirectory, "out"}];
+      Module[{tempId, tempFileIn, tempFileOut},
+        tempId = ToString[RandomInteger[100000]];
+        tempFileIn = FileNameJoin[{$TemporaryDirectory, "in" <> tempId}];
+        tempFileOut = FileNameJoin[{$TemporaryDirectory, "out" <> tempId}];
         BinaryWrite[tempFileIn, template]; Close[tempFileIn];
         Splice[tempFileIn, tempFileOut, FormatType -> StandardForm, PageWidth -> Infinity];
         BinaryWrite[channel, BinaryReadList[tempFileOut]];
