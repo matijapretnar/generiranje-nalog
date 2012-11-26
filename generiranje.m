@@ -82,10 +82,10 @@ IzpisiDatoteko[naloge_, parametri_, pot_, koncnica_, {template_}] :=
   Module[{datoteka},
     Quiet[CreateDirectory[pot]];
     DeleteFile[FileNames[FileNameJoin[{pot, "*"}]]];
-    ParallelDo[
+    Do[
       Block[{student = naloga[[1]]},
         datoteka = OpenWrite[FileNameJoin[{pot, ImeDatoteke[student] <> "." <> koncnica}], BinaryFormat -> True];
-        Izpisi[parametri, naloga[[2]], template, datoteka]
+        Izpisi[parametri, naloga[[2]], template, datoteka];
         Close[datoteka]
       ],
     {naloga, naloge}];
